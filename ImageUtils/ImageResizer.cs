@@ -4,8 +4,17 @@ using static System.Drawing.Image;
 
 namespace ImageUtils;
 
-public class ImageUtils
+/// <summary>
+/// Provides routines for image resizing.
+/// </summary>
+public class ImageResizer
 {
+    #region Static Fields and Constants
+
+    private static readonly int MaxResizeMegaPixels = 100;
+
+    #endregion
+
     #region Public Methods and Operators
 
     /// <summary>
@@ -15,9 +24,15 @@ public class ImageUtils
     /// <param name="width">Desired width.</param>
     /// <param name="height">Desired height.</param>
     /// <param name="outputFilePath">Output file path.</param>
+    /// <remarks>Resized output image is limited to 100Mpx (10,000 x 10,000).</remarks>
     public static void ImageResize(string inputFilePath, int width, int height, string outputFilePath)
     {
         if (string.IsNullOrEmpty(inputFilePath))
+        {
+            throw new ArgumentNullException(nameof(inputFilePath));
+        }
+
+        if (string.IsNullOrEmpty(outputFilePath))
         {
             throw new ArgumentNullException(nameof(inputFilePath));
         }
@@ -27,10 +42,21 @@ public class ImageUtils
             throw new ArgumentException($"Input file `{nameof(inputFilePath)}` does not exist.");
         }
 
-        if (string.IsNullOrEmpty(outputFilePath))
+        if (width <= 0 || height <= 0)
         {
-            outputFilePath = inputFilePath;
-            // TODO: check write access of folder
+            throw new ArgumentException($"Supplied width/height are <= 0.");
+        }
+
+        if (width * height >= MaxResizeMegaPixels * 1000 * 1000)
+        {
+            throw new ArgumentException($"Supplied width/height result in the output >= {MaxResizeMegaPixels} Mpx.");
+        }
+
+        var convertInPlace = false;
+        if (outputFilePath.Equals(inputFilePath))
+        {
+            outputFilePath = Path.GetTempFileName();
+            convertInPlace = true;
         }
 
         using var bmpInput = FromFile(inputFilePath);
@@ -58,11 +84,19 @@ public class ImageUtils
             }
         }
 
+        bmpInput.Dispose();
+
         // TODO: get original dpi?
         bmpOutput.SetResolution(300.0f, 300.0f);
 
-        // TODO: some backup mechanism when outputFilePath is not writable -> move to temp?
         bmpOutput.Save(outputFilePath, ImageFormat.Jpeg);
+        bmpOutput.Dispose();
+
+        if (convertInPlace)
+        {
+            File.Delete(inputFilePath);
+            File.Move(outputFilePath, inputFilePath);
+        }
     }
 
     #endregion
