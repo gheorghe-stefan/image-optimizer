@@ -24,6 +24,12 @@ internal sealed class TestUtils
                 {
                     Assert.AreEqual(newWidth, newDimensions.width);
                     Assert.AreEqual(newHeight, newDimensions.height);
+
+                    // TODO: save original props before replace?
+                    /*if (!inputFilePath.Equals(outputFilePath))
+                    {
+                        Assert.IsTrue(ComparerUtils.CompareImagePropertyItems(inputFilePath, outputFilePath), "Input/output image property items are not the same.");
+                    }*/
                 }
                 else
                 {

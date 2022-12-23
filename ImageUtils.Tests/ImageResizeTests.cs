@@ -30,12 +30,17 @@ public class ImageResizeTests
     [TestMethod]
     public void TestConvertJpg_InputAsOutput()
     {
+        var fileBackup = Path.GetTempFileName();
+        File.Copy(DefaultInputFile, fileBackup, true);
+        
         TestUtils.TestImageResize(DefaultInputFile, 1600, -1, DefaultInputFile);
+
+        File.Move(fileBackup, DefaultInputFile, true);
     }
 
     [TestMethod]
     public void TestConvertJpg_KeepRatio()
-    {
+    { 
         TestUtils.TestImageResize(DefaultInputFile, 1600, -1, DefaultOutputFile);
     }
 

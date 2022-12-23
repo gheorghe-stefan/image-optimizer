@@ -73,15 +73,11 @@ public class ImageResizer
             // TODO: log message or warning? that the given ratio is different
         }
 
+        // TODO: use ExifLib to retrieve all options (sometimes camera type is not copied over)
         using var bmpOutput = new Bitmap(bmpInput, new Size(width, height));
-        foreach (var id in bmpInput.PropertyIdList)
+        foreach (var propertyItem in bmpInput.PropertyItems)
         {
-            var propItem = bmpInput.GetPropertyItem(id);
-
-            if (propItem != null)
-            {
-                bmpOutput.SetPropertyItem(propItem);
-            }
+            bmpOutput.SetPropertyItem(propertyItem);
         }
 
         bmpInput.Dispose();

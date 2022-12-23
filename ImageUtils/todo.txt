@@ -1,8 +1,8 @@
-UI: resize output pane with main window
-BUG: treat properly errors, image which exists already, etc
+x UI: resize output pane with main window
+* BUG: treat properly errors, image which exists already, etc
 FEAT: predefined sizes
-FEAT: set bigger dimension instead of w/h; compute smaller one based on ratio
+* FEAT: set bigger dimension instead of w/h; compute smaller one based on ratio
 UI: feature for quality?
-FEAT: copy exif & creation timestamp (or which one is used by wordpress)
-DEV: unit tests for the lib
+* FEAT: copy exif & creation timestamp (or which one is used by wordpress)
+* DEV: unit tests for the lib
 dev: call each conversion in a separate task
